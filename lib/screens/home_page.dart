@@ -8,7 +8,7 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -38,66 +38,31 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Todo App', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Todo App',
+          style: TextStyle(color: Colors.white, fontSize: 24),
+        ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TaskFilter(
-              initialFilters: filters,
-              onFilterChanged: (newFilters) {
-                setState(() {
-                  filters = newFilters;
-                });
-              },
-            ),
+          IconButton(
+            icon: const Icon(Icons.filter_alt,
+                color: Colors.white), // Changed filter icon
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => TaskFilter(
+                  initialFilters: filters,
+                  onFilterChanged: (newFilters) {
+                    setState(() {
+                      filters = newFilters;
+                    });
+                  },
+                ),
+              );
+            },
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _filteredTasks().length,
-        itemBuilder: (context, index) {
-          final task = _filteredTasks()[index];
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              border: Border.all(color: _getStatusColor(task['status'])),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: ListTile(
-              leading:
-                  Icon(Icons.circle, color: _getStatusColor(task['status'])),
-              title: Text(
-                task['title'],
-                style: const TextStyle(color: Colors.black),
-              ),
-              onTap: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditTaskPage(
-                      task: {
-                        'id': task['id'].toString(),
-                        'title': task['title'],
-                        'description': task['description'],
-                        'status': task['status'],
-                      },
-                      onUpdate: (updatedTask) {
-                        setState(() {
-                          tasks[index] = updatedTask;
-                        });
-                      },
-                    ),
-                  ),
-                );
-                if (result == true) {
-                  _loadTasks();
-                }
-              },
-            ),
-          );
-        },
-      ),
+      body: _buildTaskList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await Navigator.push(
@@ -108,9 +73,61 @@ class _HomePageState extends State<HomePage> {
             _loadTasks();
           }
         },
-        backgroundColor: Colors.grey,
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.black, // Changed to black
+        child: const Icon(Icons.add, color: Colors.white), // White plus icon
       ),
+    );
+  }
+
+  Widget _buildTaskList() {
+    if (tasks.isEmpty) {
+      return const Center(child: Text("Vous n'avez aucune tâche!"));
+    }
+    return ListView.builder(
+      itemCount: _filteredTasks().length,
+      itemBuilder: (context, index) {
+        final task = _filteredTasks()[index];
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border.all(color: _getStatusColor(task['status'])),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: ListTile(
+            leading: Icon(Icons.circle, color: _getStatusColor(task['status'])),
+            title: Text(
+              task['title'],
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold, // Make the title bold
+              ),
+            ),
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditTaskPage(
+                    task: {
+                      'id': task['id'].toString(),
+                      'title': task['title'],
+                      'description': task['description'],
+                      'status': task['status'],
+                    },
+                    onUpdate: (updatedTask) {
+                      setState(() {
+                        tasks = List.from(tasks)
+                          ..removeAt(index)
+                          ..insert(index, updatedTask);
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

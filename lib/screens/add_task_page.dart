@@ -5,13 +5,20 @@ class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
 
   @override
-  _AddTaskPageState createState() => _AddTaskPageState();
+  createState() => _AddTaskPageState();
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
-  String _title = '';
-  String _description = '';
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   String _status = 'Todo';
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +38,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Ajouter',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Status',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  'Ajouter',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  width: 150, // Set a fixed width for the dropdown container
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(12.0),
@@ -51,6 +56,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     child: DropdownButton<String>(
                       value: _status,
                       icon: const Icon(Icons.arrow_drop_down),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _status = newValue!;
@@ -65,10 +71,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               Icon(
                                 Icons.circle,
                                 color: _getStatusColor(value),
-                                size: 16, // Slightly bigger circle
+                                size: 19,
                               ),
                               const SizedBox(width: 8),
-                              Text(value),
+                              Flexible(
+                                // Added Flexible widget
+                                child: Text(
+                                  value,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold), // Bold text
+                                  overflow: TextOverflow
+                                      .ellipsis, // Ensure no overflow
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -81,10 +96,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               Icon(
                                 Icons.circle,
                                 color: _getStatusColor(_status),
-                                size: 16, // Slightly bigger circle
+                                size: 16,
                               ),
                               const SizedBox(width: 8),
-                              const Text('Status'),
+                              const Text(
+                                'Status',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold), // Bold text
+                              ),
                             ],
                           );
                         }).toList();
@@ -96,45 +115,45 @@ class _AddTaskPageState extends State<AddTaskPage> {
             ),
             const SizedBox(height: 16),
             TextField(
+              controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'Nouvelle tache',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(12.0)), // Rounded edges
+                ),
               ),
-              onChanged: (value) {
-                setState(() {
-                  _title = value;
-                });
-              },
             ),
             const SizedBox(height: 16),
             TextField(
+              controller: _descriptionController,
+              maxLines: 5,
               decoration: const InputDecoration(
                 labelText: 'Description',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(12.0)), // Rounded edges
+                ),
               ),
-              maxLines: 5,
-              onChanged: (value) {
-                setState(() {
-                  _description = value;
-                });
-              },
             ),
             const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
                   await DatabaseHelper().insertTask({
-                    'title': _title,
-                    'description': _description,
+                    'title': _titleController.text,
+                    'description': _descriptionController.text,
                     'status': _status,
                   });
                   Navigator.pop(context, true);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.black, // Changed to black background
                   minimumSize: const Size(150, 50),
                 ),
-                child: const Text('Ajouter', style: TextStyle(fontSize: 18)),
+                child: const Text('Ajouter',
+                    style: TextStyle(
+                        fontSize: 18, color: Colors.white)), // White text
               ),
             ),
           ],
@@ -144,8 +163,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
         onPressed: () {
           Navigator.pop(context);
         },
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.close, color: Colors.white),
+        backgroundColor: Colors.black, // Changed to black
+        child: const Icon(Icons.close, color: Colors.white), // White close icon
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );

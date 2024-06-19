@@ -50,18 +50,16 @@ class _EditTaskPageState extends State<EditTaskPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Modifier',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Status',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  'Modifier',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  width: 150,
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(12.0),
@@ -70,6 +68,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                     child: DropdownButton<String>(
                       value: _status,
                       icon: const Icon(Icons.arrow_drop_down),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _status = newValue!;
@@ -84,10 +83,17 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               Icon(
                                 Icons.circle,
                                 color: _getStatusColor(value),
-                                size: 16, // Slightly bigger circle
+                                size: 16,
                               ),
                               const SizedBox(width: 8),
-                              Text(value),
+                              Flexible(
+                                child: Text(
+                                  value,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -100,10 +106,13 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               Icon(
                                 Icons.circle,
                                 color: _getStatusColor(_status),
-                                size: 16, // Slightly bigger circle
+                                size: 16,
                               ),
                               const SizedBox(width: 8),
-                              const Text('Status'),
+                              const Text(
+                                'Status',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ],
                           );
                         }).toList();
@@ -118,7 +127,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
               controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'Nouvelle tache',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -127,32 +138,37 @@ class _EditTaskPageState extends State<EditTaskPage> {
               maxLines: 5,
               decoration: const InputDecoration(
                 labelText: 'Description',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                ),
               ),
             ),
             const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  await DatabaseHelper().updateTask({
-                    'id': widget.task['id']!,
-                    'title': _titleController.text,
-                    'description': _descriptionController.text,
-                    'status': _status,
-                  });
-                  widget.onUpdate({
-                    'id': widget.task['id']!,
-                    'title': _titleController.text,
-                    'description': _descriptionController.text,
-                    'status': _status,
-                  });
-                  Navigator.pop(context);
+                  if (mounted) {
+                    await DatabaseHelper().updateTask({
+                      'id': widget.task['id']!,
+                      'title': _titleController.text,
+                      'description': _descriptionController.text,
+                      'status': _status,
+                    });
+                    widget.onUpdate({
+                      'id': widget.task['id']!,
+                      'title': _titleController.text,
+                      'description': _descriptionController.text,
+                      'status': _status,
+                    });
+                    Navigator.pop(context, true);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.black,
                   minimumSize: const Size(150, 50),
                 ),
-                child: const Text('Modifier', style: TextStyle(fontSize: 18)),
+                child: const Text('Modifier',
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
           ],
@@ -162,7 +178,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
         onPressed: () {
           Navigator.pop(context);
         },
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.black,
         child: const Icon(Icons.close, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
