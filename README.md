@@ -6,7 +6,7 @@ A Flutter project project for task management.
 ## Authors 
 
 - Aboubekren AHMEDTALEB
-- Mohamed ABDEALLAHI SAKHO
+- Mouhamed Abdallah SAKHO
 - Omar DIOP
 - Baba NDIAYE
 - Inssa DIOUF
