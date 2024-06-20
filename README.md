@@ -9,6 +9,7 @@ A Flutter project project for task management.
 - Mohamed ABDEALLAHI SAKHO
 - Omar DIOP
 - Baba NDIAYE
+- Inssa DIOUF
 
 ## Class 
  - GLISA
