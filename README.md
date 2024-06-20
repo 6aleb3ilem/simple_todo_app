@@ -1,4 +1,18 @@
-## Captures d'écran
+# Simple Todo App
+
+A Flutter project project for task management.
+
+
+## Authors 
+
+- Aboubekren AHMEDTALEB
+- Mohamed ABDEALLAHI SAKHO
+- Omar DIOP
+- Baba NDIAYE
+
+## Class 
+ - GLISA
+## Screenshots 
 
 <img src="https://github.com/6aleb3ilem/simple_todo_app/assets/121716974/d0e9e87f-a1dd-45d1-9f1f-06c2217a1d84" alt="1-Empty Home page" width="300">
 <p>Page d'accueil vide</p>
@@ -37,7 +51,13 @@
 <p>Filtrage toutes les options</p>
 
 <img src="https://github.com/6aleb3ilem/simple_todo_app/assets/121716974/f2bab3e5-9b7b-4a04-9c94-eca828a16b51" alt="12-Filter par Done" width="300">
-<p>Filtre par Fait</p>
+<p>Filtre par Done</p>
 
 <img src="https://github.com/6aleb3ilem/simple_todo_app/assets/121716974/a041b135-c7c5-402e-9b8a-23a1c49e65fb" alt="13-Result" width="300">
 <p>Résultat</p>
+
+## Demo
+
+
+
+
